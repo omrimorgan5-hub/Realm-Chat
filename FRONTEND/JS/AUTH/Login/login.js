@@ -19,12 +19,12 @@ loginButton.addEventListener('click', async (event) => {
 
     // The .value property exists on input elements in standard JS
     const payload_log = {
-        username_log: usernameInput.value.trim(),
-        password_log: passwordInput.value,
+        username: usernameInput.value.trim(),
+        password: passwordInput.value,
     };
 
     // Basic client-side validation
-    if (!payload_log.username || !payload_log.password ) {
+    if (!payload_log.username || !payload_log.password) {
         alert("Please fill in all fields.");
         return;
     }

@@ -54,7 +54,7 @@ def signup():
 
     new_user = {
         "username": username,
-        "password_hash": hashed_password,  # Never store plain passwords!
+        "password": hashed_password,  # Never store plain passwords!
         "birthday": birthday,
         "display_name": display_name,
         "created_at": datetime.now().isoformat()

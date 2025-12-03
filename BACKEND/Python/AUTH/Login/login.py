@@ -8,7 +8,7 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)  # Allow frontend on different port/origin
 
-ACCOUNTS_FILE = 'accounts.json'
+ACCOUNTS_FILE = "accounts.json"
 
 
 # -------------------- Utility Functions --------------------
@@ -47,18 +47,22 @@ def login():
     if not info_user:
         return jsonify({"message": "No data provided."}), 400
 
-    username_log = info_user.get('username')
-    password_log = info_user.get('password')
+    username = info_user.get('username')
+    password = info_user.get('password')
 
-    if not all([username_log, password_log]):
+    if not all([username, password]):
         return jsonify({"message": "All fields are required."}), 400
 
     users = load_data()
-    hashed_password = hash_password(password_log)
+    hashed_password = hash_password(password)
+    print(users)
+
+    print("Login attempt:", username, hashed_password)
 
     # Check credentials
     for user in users:
-        if user.get("username") == username_log and user.get("password") == hashed_password:
+        print("Stored:", user.get("username"), user.get("password"))
+        if user.get("username") == username and user.get("password") == hashed_password:
             return jsonify({"message": "Login successful!"}), 200
 
     return jsonify({"message": "Invalid username or password."}), 401

@@ -38,6 +38,7 @@ def signup():
     password = info_user.get('password')
     birthday = info_user.get('birthday')
     display_name = info_user.get('display_name')
+    email = info_user.get('email')
 
     if not all([username, password, birthday, display_name]):
         return jsonify({"message": "All fields are required."}), 400
@@ -57,6 +58,7 @@ def signup():
         "password": hashed_password,  # Never store plain passwords!
         "birthday": birthday,
         "display_name": display_name,
+        "email": email,
         "created_at": datetime.now().isoformat()
     }
 

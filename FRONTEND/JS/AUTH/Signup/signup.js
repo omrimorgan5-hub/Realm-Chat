@@ -5,10 +5,11 @@ const usernameInput = document.getElementById('username-name');
 const passwordInput = document.getElementById('password-pass');
 const birthdayInput = document.getElementById('date-birth');
 const displayNameInput = document.getElementById('display-name');
+const emailInput = document.getElementById('email-user');
 
 // Safety check: In JS we don't know the element types explicitly at compile time,
 // but we can check if they exist before trying to add listeners or access .value.
-if (!signupButton || !usernameInput || !passwordInput || !birthdayInput || !displayNameInput) {
+if (!signupButton || !usernameInput || !passwordInput || !birthdayInput || !displayNameInput || !emailInput) {
     console.error("Missing required form elements.");
     // Depending on your environment (e.g., if this is a script tag in HTML),
     // you might remove the 'throw' if you want other scripts on the page to run.
@@ -23,11 +24,12 @@ signupButton.addEventListener('click', async (event) => {
         username: usernameInput.value.trim(),
         password: passwordInput.value,
         birthday: birthdayInput.value,
-        display_name: displayNameInput.value.trim()
+        display_name: displayNameInput.value.trim(),
+        email: emailInput.value
     };
 
     // Basic client-side validation
-    if (!payload.username || !payload.password || !payload.birthday || !payload.display_name) {
+    if (!payload.username || !payload.password || !payload.birthday || !payload.display_name || !payload.email) {
         alert("Please fill in all fields.");
         return;
     }

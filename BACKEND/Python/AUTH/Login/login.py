@@ -55,10 +55,7 @@ def login():
 
     users = load_data()
     hashed_password = hash_password(password)
-    print(users)
-
-    print("Login attempt:", username, hashed_password)
-
+    
     # Check credentials
     for user in users:
         print("Stored:", user.get("username"), user.get("password"))

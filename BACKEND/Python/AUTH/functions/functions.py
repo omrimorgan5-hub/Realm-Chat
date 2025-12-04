@@ -1,6 +1,8 @@
 import json
 import random
 import os
+import re
+import smtplib
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import hashlib
@@ -31,6 +33,8 @@ def hash_password(password: str) -> str:
 
 # signup function.
 def signup():
+
+
     info_user = request.get_json()
 
     if not info_user:
@@ -45,12 +49,26 @@ def signup():
     if not all([username, password, birthday, display_name]):
         return jsonify({"message": "All fields are required."}), 400
 
+    if len(password) < 8 or len(password) > 64:
+        return jsonify({"message": "Password must be between 8 and 64 characters."}), 400
+
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        return jsonify({"message": "Invalid email format."}), 400
+
+    try:
+        datetime.fromisoformat(birthday)
+    except ValueError:
+        return jsonify({"message": "Invalid birthday format."}), 400
+
     # Load existing users
     users = load_data()
 
     # Check for duplicate username
     if any(user['username'] == username for user in users):
         return jsonify({"message": "Username already taken."}), 409
+    if any(user['email'] == email for user in users):
+        return jsonify({"message": "Email already registered."}), 409
+
 
     # Hash password before saving
     hashed_password = hash_password(password)
@@ -64,6 +82,10 @@ def signup():
         "is_verified": False,
         "created_at": datetime.now().isoformat()
     }
+
+    otp = gen_otp()
+    send_email(email, otp)
+    new_user["otp"] = otp
 
     users.append(new_user)
     save_data(users)
@@ -98,19 +120,6 @@ def login():
 def send_email():
     pass
 
-def verify_email():
-    otp = gen_otp()
-
-    send_email(otp)
-
-    info_user = request.get_json()
-    username = info_user.get("username")
-    otp_entered = info_user.get("otp")
-
-    users = load_data()
-    ok = False
-
-    for user in users:
-        if user.get('username') == username and user.get('is_verified') == False and otp_entered == otp:
-            return jsonify({"message": "OTP Ok."}), 200
+def verify_otp():
+    pass
     

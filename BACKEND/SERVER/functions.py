@@ -3,9 +3,6 @@ import random
 import os
 import re
 import smtplib
-import BACKEND.Python.AUTH.Server.gmail
-from BACKEND.Python.AUTH.Server.gmail import send_email, gmail_authenticate
-from os import env
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import hashlib
@@ -22,7 +19,7 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 # functions for general use.
 def gen_otp():
-    random.randint(100000, 999999)
+    return random.randint(100000, 999999)
 
 def load_data():
     if not os.path.exists(ACCOUNTS_FILE) or os.stat(ACCOUNTS_FILE).st_size == 0:
@@ -37,6 +34,8 @@ def load_data():
 def save_data(data):
     with open(ACCOUNTS_FILE, 'w') as f:
         json.dump(data, f, indent=4)
+
+
 
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -73,7 +72,7 @@ def signup():
     # Load existing users
     users = load_data()
 
-    # Check for duplicate username
+    # Check for duplicate username and email
     if any(user['username'] == username for user in users):
         return jsonify({"message": "Username already taken."}), 409
     if any(user['email'] == email for user in users):
@@ -134,19 +133,56 @@ def verify_otp():
     if not info_user:
         return jsonify({"message": "No Data provided."}), 400
     
-    otp_entered = info_user.get("otp")
+    otp_entered = str(info_user.get("otp")).strip()
     username = info_user.get("username")
 
-
     users = load_data()
+    updated = False
 
     for user in users:
-        if user.get("otp") == otp_entered and user.get("username") == username:
-            return jsonify({"message": "otp verified continue."}), 200
-    return jsonify({"message": "Invalid otp password."}), 401
+        if user.get("username") == username:
+            if user.get("is_verified"):
+                return jsonify({"message": "OTP already verified."}), 200
+            elif str(user.get("otp")) == str(otp_entered):
+                user.pop("otp", None)
+                user["is_verified"] = True
+                updated = True
+                break
 
-
-
-
-
+    if updated:
+        save_data(users)  # save the whole list back
+        return jsonify({"message": "OTP verified, continue."}), 200
+    else:
+        return jsonify({"message": "Invalid OTP."}), 401
     
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+Credentials_json = 'credentials.json'
+
+def gmail_authenticate():
+    creds = None
+    # Load saved token if it exists
+    if os.path.exists("token.json"):
+        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    # If no valid creds, do OAuth flow
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(Credentials_json, SCOPES)
+            creds = flow.run_local_server(port=8080, access_type="offline", prompt="consent")
+
+        # Save token for next time
+        with open("token.json", "w") as token:
+            token.write(creds.to_json())
+    return build('gmail', 'v1', credentials=creds)
+
+def send_email(recipient, otp):
+    service = gmail_authenticate()
+
+    message = MIMEText(f"Your OTP is: {otp}")
+    message['to'] = recipient
+    message['subject'] = "Your OTP Code"
+
+    raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
+    service.users().messages().send(userId="me", body={'raw': raw}).execute()
+    print(f"OTP {otp} sent to {recipient}")

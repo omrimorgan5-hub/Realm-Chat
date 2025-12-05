@@ -6,17 +6,9 @@ const passwordInput = document.getElementById('password-pass');
 const birthdayInput = document.getElementById('date-birth');
 const displayNameInput = document.getElementById('display-name');
 const emailInput = document.getElementById('email-user');
-const formContainer = document.getElementById('form-container'); // wrapper div around your form
-const messageBox = document.getElementById('message-box'); // add a <div id="message-box"></div> in HTML
-
-// Utility to show messages inline
-function showMessage(msg, isError = false) {
-    messageBox.textContent = msg;
-    messageBox.style.color = isError ? "red" : "green";
-}
 
 // Safety check
-if (!signupButton || !usernameInput || !passwordInput || !birthdayInput || !displayNameInput || !emailInput || !formContainer || !messageBox) {
+if (!signupButton || !usernameInput || !passwordInput || !birthdayInput || !displayNameInput || !emailInput) {
     console.error("Missing required form elements.");
     throw new Error("Required form elements missing.");
 }
@@ -33,7 +25,7 @@ signupButton.addEventListener('click', async (event) => {
     };
 
     if (!payload.username || !payload.password || !payload.birthday || !payload.display_name || !payload.email) {
-        showMessage("Please fill in all fields.", true);
+        alert("Please fill in all fields.");
         return;
     }
 
@@ -46,57 +38,17 @@ signupButton.addEventListener('click', async (event) => {
 
         const data = await response.json();
 
-        if (response.ok) {
-            console.log("Signup started:", data);
-            showMessage("Signup started. Please verify OTP.");
-
-            // Swap out signup form for OTP form
-            formContainer.innerHTML = `
-                <form id="otp-form">
-                    <input type="text" id="otp-code" placeholder="Enter OTP" required>
-                    <button type="submit">Verify</button>
-                </form>
-            `;
-
-            // Attach OTP form handler
-            const otpForm = document.getElementById('otp-form');
-            otpForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const otpPayload = {
-                    username: payload.username,
-                    otp: document.getElementById('otp-code').value.trim()
-                };
-
-                try {
-                    const verifyRes = await fetch('http://127.0.0.1:5000/verify-otp', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(otpPayload)
-                    });
-
-                    const verifyData = await verifyRes.json();
-
-                    if (verifyRes.ok) {
-                        showMessage("Account verified!");
-                        console.log("Verification success:", verifyData);
-                        // Optional: redirect to dashboard or login page
-                        // window.location.href = "/dashboard.html";
-                    } else {
-                        showMessage(verifyData.message || "OTP verification failed.", true);
-                        console.error("Verification error:", verifyData);
-                    }
-                } catch (err) {
-                    console.error("Network error during OTP verification:", err);
-                    showMessage("Could not connect to server for OTP verification.", true);
-                }
-            });
+        if (response.status === 201) {
+            console.log("Signup successful:", data);
+            alert("Signup successful! You can now verify OTP.");
         } else {
             console.error("Signup error:", data);
-            showMessage(data.message || "Signup failed.", true);
+            alert(data.message || "Signup failed.");
         }
     } catch (err) {
         console.error("Network error:", err);
-        showMessage("Could not connect to server.", true);
+        alert("Could not connect to server.");
     }
 });
+
 

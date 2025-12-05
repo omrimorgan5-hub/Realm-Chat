@@ -4,16 +4,20 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import hashlib
 from datetime import datetime
-from Python.AUTH.functions.functions import load_data, save_data, hash_password, signup, login
+import functions
+from functions import signup,load_data,login,verify_otp,save_data,send_email  
+
+
 
 app = Flask(__name__)
-CORS(app)  # Allow frontend on different port/origin
+CORS(app)  # Allow frontend on different port/origin\
 
 ACCOUNTS_FILE = 'accounts.json'
 
 
 app.add_url_rule('/signup', view_func=signup ,methods=['POST'])
 app.add_url_rule('/login', view_func=login ,methods=['POST'])
+app.add_url_rule('/verify-otp', view_func=verify_otp ,methods=['POST'])
 
 
 if __name__ == '__main__':

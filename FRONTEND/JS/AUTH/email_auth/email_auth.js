@@ -1,10 +1,10 @@
 // Set up needed variables to complete .js file
 const verify_otp = document.getElementById("email-auth_submit");
+const username = document.getElementById("username-otp");
 const code = document.getElementById("otp");
-const username_email = document.getElementById('username-email');
 
 // check if all fields are filled
-if (!verify_otp || !code || !username_email) {
+if (!code || !username) {
     console.error("Missing required form elements.");
     throw new Error("Required form elements missing.");
 }
@@ -15,27 +15,27 @@ verify_otp.addEventListener('click', async (event) => {
     // .value variables
 
     const payload_email = {
-        code: code,
-        username: username_email
+        otp: code.value.trim(),
+        username: username.value
     };
 
-    if (!payload_email.code || payload_email.username) {
+    if (!code.value.trim() || !username) {
         console.error("Please fill in all fields.");
         return;
     };
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/email_auth', {
+        const response = await fetch('http://127.0.0.1:5000/verify-otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Fixed!
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(payload_email)
         });
 
         const data = await response.json();
 
-        if (response.ok) {
+        if (response.status === 200) {
             console.log("Success:", data);
             alert("verification successful!");
             // Optional: redirect or clear form

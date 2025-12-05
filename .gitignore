@@ -1,3 +1,6 @@
 # files on root level.
 accounts.json
 .vscode
+.env
+credentials.json
+token.json

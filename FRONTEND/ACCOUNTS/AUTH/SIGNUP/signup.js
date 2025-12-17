@@ -38,17 +38,25 @@ signupButton.addEventListener('click', async (event) => {
 
         const data = await response.json();
 
-        if (response.status === 201) {
+        if (response.status === 201 || 200) {
             console.log("Signup successful:", data);
             alert("Signup successful! You can now verify OTP.");
         } else {
             console.error("Signup error:", data);
             alert(data.message || "Signup failed.");
         }
-    } catch (err) {
+
+
+    } catch(err) {
         console.error("Network error:", err);
         alert("Could not connect to server.");
     }
+
+    usernameInput = ""
+    passwordInput = ""
+    emailInput = ""
+    birthdayInput = ""
+    displayNameInput = ""
 });
 
 

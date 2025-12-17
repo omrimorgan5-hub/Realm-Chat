@@ -140,7 +140,7 @@ def signup():
     send_email(email, otp_code)
     
     print(f"New user registered: {username}")
-    return jsonify({"message": "Signup successful! OTP sent."}), 201
+    return jsonify({"message": "Signup successful! OTP sent."}), 201, 200
 
 
 def login():

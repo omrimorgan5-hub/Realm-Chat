@@ -38,6 +38,7 @@ verify_otp.addEventListener('click', async (event) => {
         if (response.status === 200) {
             console.log("Success:", data);
             alert("verification successful!");
+            window.location.replace("../LOGIN/login.html");
             // Optional: redirect or clear form
         } else {
             console.error("Error:", data);

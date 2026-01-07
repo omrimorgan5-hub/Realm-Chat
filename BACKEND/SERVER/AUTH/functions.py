@@ -1,6 +1,7 @@
 import json
 import random
 import os
+import threading
 import re
 import smtplib
 from flask import Flask, request, jsonify # Flask items are needed for request/jsonify
@@ -75,10 +76,10 @@ def gmail_authenticate():
             token.write(creds.to_json())
     return build('gmail', 'v1', credentials=creds)
 
-def send_email(recipient, otp):
+def send_email(recipient, otp, username):
     """Sends the OTP code via Gmail API."""
     service = gmail_authenticate()
-    message = MIMEText(f"Your OTP is: {otp}")
+    message = MIMEText(f"hello {username}! Your OTP is: {otp}")
     message['to'] = recipient
     message['subject'] = "Your OTP Code"
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
@@ -105,7 +106,7 @@ def signup():
 
     # Validation (Remains the same)
     if len(password) < 8 or len(password) > 64:
-        return jsonify({"message": "Password must be between 8 and 64 characters."}), 400
+        return jsonify({"message": "Password must be between 8 and 64 characters."}, 400)
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
         return jsonify({"message": "Invalid email format."}), 400
     try:
@@ -118,29 +119,35 @@ def signup():
         return jsonify({"message": "Username already taken."}), 409
     if User.query.filter_by(email=email).first():
         return jsonify({"message": "Email already registered."}), 409
+    
+
 
     hashed_password = hash_password(password)
     otp_code = gen_otp()
     otp_expiration = datetime.utcnow() + timedelta(minutes=10)
 
-    # Insert new user into the database
     new_user = User(
-        username=username,
         password=hashed_password,
         birthday=birthday,
+        username=username,
         display_name=display_name,
         email=email,
         otp_code=otp_code,
         otp_expires_at=otp_expiration
-    )
+        )
 
     db.session.add(new_user)
     db.session.commit() 
 
-    send_email(email, otp_code)
+    email_thread = threading.Thread(
+        target=send_email,
+        args=(email, otp_code, username)
+    )
+    email_thread.start
     
     print(f"New user registered: {username}")
-    return jsonify({"message": "Signup successful! OTP sent."}), 201
+    print(f"Sent {otp_code} to new user {username}")
+    return jsonify({"message": "Signup successful! OTP sent."}),200
 
 
 def login():
@@ -187,16 +194,24 @@ def verify_otp():
     if not user:
         return jsonify({"message": "Invalid username."}), 401
     
-    if user.is_verified:
-        return jsonify({"message": "Account already verified."}), 200
+    if user.is_verified == True:
+        return jsonify({"message": "Account already verified."}), 409
 
     # 1. Check for expiration
-    if user.otp_expires_at and user.otp_expires_at < datetime.utcnow():
+    if user.otp_expires_at < datetime.utcnow():
         # Clean up expired fields
         user.otp_code = None
         user.otp_expires_at = None
         db.session.commit()
-        return jsonify({"message": "OTP has expired. Please request a new code."}), 401
+        email = User.query.filter_by(email=email).first()
+        print(email)
+        otp_code = gen_otp()
+        send_email(email, otp, username)
+        db.session.commit()
+        return jsonify({"message": "OTP has expired. You have been sent a new code."}, 401)
+    
+    if user.otp_code == None:
+        return jsonify({"message": "OTP Entered is either expired or is invalid you may also already be verified."}, 409)
 
     # 2. Check for code match
     if user.otp_code == str(otp_entered):
@@ -209,3 +224,6 @@ def verify_otp():
         return jsonify({"message": "OTP verified, continue."}), 200
     else:
         return jsonify({"message": "Invalid OTP."}), 401
+
+def send_message():
+    pass

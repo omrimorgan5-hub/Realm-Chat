@@ -54,5 +54,6 @@ loginButton.addEventListener('click', async (event) => {
     }
     usernameInput.value = "";
     passwordInput.value = "";
+    window.location.replace("../../../LANDING/test.html")
 
 });

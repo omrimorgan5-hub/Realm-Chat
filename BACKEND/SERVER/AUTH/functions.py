@@ -45,7 +45,7 @@ class User(db.Model):
     
     is_verified = db.Column(db.Boolean, default=False)
     otp_code = db.Column(db.String(6), nullable=True) 
-    otp_expires_at = db.Column(db.DateTime, nullable=True) 
+    otp_expires_at = db.Column(db.DateTime, nullable=True)
     
     def __repr__(self):
         return f'<User {self.username}>'
@@ -146,8 +146,10 @@ def signup():
     email_thread.start
     
     print(f"New user registered: {username}")
+
     print(f"Sent {otp_code} to new user {username}")
     return jsonify({"message": "Signup successful! OTP sent."}),200
+
 
 
 def login():

@@ -30,19 +30,9 @@ signupButton.addEventListener('click', async (event) => {
             body: JSON.stringify(payload)
         });
 
-        // 1. Get the raw text first to prevent JSON parse crashes
-        const responseText = await response.text();
-        let data;
+        const data = await response.json();
 
-        try {
-            data = JSON.parse(responseText);
-        } catch (e) {
-            console.error("Server returned non-JSON data:", responseText);
-            throw new Error("The server registered you, but returned an invalid response format.");
-        }
-
-        // 2. Handle Success (200-299)
-        if (response.ok) {
+        if (response.status === 201) {
             console.log("Signup successful:", data);
             alert("Signup successful! You can now verify OTP.");
 
@@ -60,15 +50,14 @@ signupButton.addEventListener('click', async (event) => {
             console.error("Signup logic error:", response.status, data);
             alert(data.message || `Error ${response.status}: Signup failed.`);
         }
-
     } catch (err) {
-        // 4. Handle Network Errors or Code Crashes
-        console.error("Detailed Fetch Error:", err);
-        
-        if (err.message.includes("response format")) {
-            alert(err.message);
-        } else {
-            alert("Could not connect to server. Check your internet or CORS settings.");
-        }
+        console.error("Network error:", err);
+        alert("Could not connect to server.");
     }
+
+    usernameInput = ""
+    passwordInput = ""
+    emailInput = ""
+    birthdayInput = ""
+    displayNameInput = ""
 });

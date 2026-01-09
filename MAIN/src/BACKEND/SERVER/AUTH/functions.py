@@ -27,8 +27,7 @@ temp_app_for_db.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(temp_app_for_db)
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-Credentials_json = 'credentials.json'
-
+Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/MAIN/ASSETS/credentials.json'
 # --- DATABASE MODEL ---
 
 class User(db.Model):

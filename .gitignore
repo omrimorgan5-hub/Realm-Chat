@@ -1,15 +1,31 @@
-# files on root level.
+# JSON
 accounts.json
-.vscode
-.env
 credentials.json
 token.json
 
-# files in Server
-.instance
-.env
+# Server files
+**/instance
 
 
 # Archives
 **/ARCHIVE
+
+# pycache
+**/__pycache__
+
+# Tests
+**/TESTS
+
+# .env
+.env
+.venv
+
+# Assets
+**/ASSETS
+
+# vscode
+.vscode
+
+# MISC
+
 

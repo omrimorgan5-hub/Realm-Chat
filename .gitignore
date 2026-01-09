@@ -4,5 +4,7 @@ accounts.json
 .env
 credentials.json
 token.json
+
+# files in Server
 .instance
 

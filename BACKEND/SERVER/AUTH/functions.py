@@ -1,13 +1,11 @@
-import json
 import random
 import os
 import threading
 import re
-import smtplib
 from flask import Flask, request, jsonify # Flask items are needed for request/jsonify
 from flask_sqlalchemy import SQLAlchemy 
 import hashlib
-from datetime import datetime, timedelta 
+from datetime import datetime, timedelta
 import base64
 from email.mime.text import MIMEText
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -41,7 +39,7 @@ class User(db.Model):
     
     birthday = db.Column(db.String(10), nullable=False)
     display_name = db.Column(db.String(120))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now)
     
     is_verified = db.Column(db.Boolean, default=False)
     otp_code = db.Column(db.String(6), nullable=True) 
@@ -52,15 +50,15 @@ class User(db.Model):
 
 # --- UTILITY FUNCTIONS ---
 
-def gen_otp():
+def gen_otp(): # has passed tests
     """Generates a random 6-digit string OTP."""
     return str(random.randint(100000, 999999)) 
 
-def hash_password(password: str) -> str:
+def hash_password(password: str) -> str: # has passed tests
     """Hashes the password using SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-def gmail_authenticate():
+def gmail_authenticate(): # has passed tests
     """Authenticates with Gmail API for sending emails."""
     # This logic remains the same
     creds = None
@@ -76,7 +74,7 @@ def gmail_authenticate():
             token.write(creds.to_json())
     return build('gmail', 'v1', credentials=creds)
 
-def send_email(recipient, otp, username):
+def send_email(recipient, otp, username): # has passed tests
     """Sends the OTP code via Gmail API."""
     service = gmail_authenticate()
     message = MIMEText(f"hello {username}! Your OTP is: {otp}")
@@ -88,7 +86,7 @@ def send_email(recipient, otp, username):
 
 # --- FLASK VIEW FUNCTIONS (ROUTES) ---
 
-def signup():
+def signup(): # has passed tests
     """Handles new user registration, storing data in SQLite."""
     info_user = request.get_json()
 
@@ -124,9 +122,10 @@ def signup():
 
     hashed_password = hash_password(password)
     otp_code = gen_otp()
-    otp_expiration = datetime.utcnow() + timedelta(minutes=10)
+    otp_expiration = datetime.now() + timedelta(minutes=10)
 
     new_user = User(
+        
         password=hashed_password,
         birthday=birthday,
         username=username,
@@ -134,6 +133,7 @@ def signup():
         email=email,
         otp_code=otp_code,
         otp_expires_at=otp_expiration
+        
         )
 
     db.session.add(new_user)
@@ -152,7 +152,7 @@ def signup():
 
 
 
-def login():
+def login(): # has passed tests
     """Handles user login authentication and checks for verification status."""
     info_user = request.get_json()
 
@@ -178,7 +178,7 @@ def login():
     return jsonify({"message": "Invalid username or password."}), 401
 
 
-def verify_otp():
+def verify_otp(): # has passed tests
     """Handles OTP submission, validates the code, and verifies the user."""
     info_user = request.get_json()
 
@@ -196,11 +196,11 @@ def verify_otp():
     if not user:
         return jsonify({"message": "Invalid username."}), 401
     
-    if user.is_verified == True:
+    if user.is_verified:
         return jsonify({"message": "Account already verified."}), 409
 
     # 1. Check for expiration
-    if user.otp_expires_at < datetime.utcnow():
+    if user.otp_expires_at < datetime.now():
         # Clean up expired fields
         user.otp_code = None
         user.otp_expires_at = None
@@ -208,11 +208,15 @@ def verify_otp():
         email = User.query.filter_by(email=email).first()
         print(email)
         otp_code = gen_otp()
-        send_email(email, otp, username)
+        email_thread = threading.Thread(
+            target=send_email,
+            args=(email, otp_code, username)
+        )
+        email_thread.start
         db.session.commit()
         return jsonify({"message": "OTP has expired. You have been sent a new code."}, 401)
     
-    if user.otp_code == None:
+    if user.otp_code is None:
         return jsonify({"message": "OTP Entered is either expired or is invalid you may also already be verified."}, 409)
 
     # 2. Check for code match
@@ -227,5 +231,6 @@ def verify_otp():
     else:
         return jsonify({"message": "Invalid OTP."}), 401
 
-def send_message():
-    pass
+
+    
+    

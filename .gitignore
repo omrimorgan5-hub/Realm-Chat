@@ -18,7 +18,7 @@ token.json
 
 # .env
 .env
-.venv
+**/venv
 
 # Assets
 **/ASSETS
@@ -27,5 +27,5 @@ token.json
 .vscode
 
 # MISC
-
+**/R.md
 

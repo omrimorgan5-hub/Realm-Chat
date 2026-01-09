@@ -1,82 +1,76 @@
-# Chat Project
+# Realm Chat 🗨️
 
-A full-stack real-time chat application built as part of my college application portfolio.
-The project begins with JavaScript, then transitions to TypeScript as the codebase matures.
-The backend will start with Flask for rapid prototyping before later migrating to Django for a more scalable, structured architecture.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status](https://img.shields.io/badge/status-building-important)](https://github.com/omrimorgan5-hub/Realm-Chat)
 
-This project will evolve over time, and I hope you follow along with the development journey.
+A full-stack real-time chat application built as part of my college-application portfolio.  
+The codebase starts in plain JavaScript and Flask, then progressively migrates to **TypeScript** and **Django** for a production-grade, scalable architecture.
 
-## 🚀 Goals
+Follow the journey from MVP to polished product—PRs, issues, and feedback are welcome!
 
-Build a functioning real-time chat system from scratch
+---
 
-Learn and apply full-stack development skills
+## ✨ Features (so far)
 
-Demonstrate backend authentication, frontend UI, and real-time communication
+* Secure e-mail based authentication (Flask-JWT)
+* Real-time messaging via WebSockets
+* Responsive, vanilla-JS frontend (TypeScript refactor in progress)
+* JSON file store → PostgreSQL migration planned
 
-Gradually increase code quality using TypeScript and Django
+---
 
-## 🛠 Tech Stack (Planned)
+## 🛠 Tech Roadmap
 
-Frontend
+| Layer        | Phase 1 (MVP)               | Phase 2 (Scale)            |
+|--------------|-----------------------------|----------------------------|
+| **Frontend** | JavaScript, HTML, CSS       | TypeScript + Vite          |
+| **Backend**  | Flask, Flask-SocketIO       | Django, Django-Channels    |
+| **Database** | JSON Flat Files             | PostgreSQL                 |
+| **Auth**     | e-mail verification         | JWT + refresh tokens       |
+| **Deploy**   | localhost                   | Docker + Railway / Render  |
 
-JavaScript → TypeScript
+---
 
-HTML & CSS
+## 🚀 Quick Start (local dev)
 
-WebSockets for real-time messages
+```bash
+# 1. Clone repo
+git clone https://github.com/omrimorgan5-hub/Realm-Chat.git
+cd Realm-Chat
 
-Backend (Phase 1)
+# 2. Backend (Flask)
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
 
-Python Flask
+# 3. Frontend (live-server or any static server)
+cd frontend
+npm install -g live-server
+live-server --port=5500
 
-JSON-based data storage → later SQL database
+Realm-Chat/
+├─ backend/          # Flask code (will move to django/ later)
+├─ frontend/         # HTML, CSS, JS → TS
+├─ docs/             # Screenshots, ER diagrams, API spec
+├─ tests/            # Pytest + Jest suites (WIP)
+└─ README.md
 
-Email authentication
+| Months | Milestone                                                 |
+| ------ | --------------------------------------------------------- |
+| 1-4    | ✅ Auth (signup/login), e-mail verification, basic WS chat |
+| 5-8    | 🔄 TypeScript refactor, persistent DB, user profiles      |
+| 9-12   | ⏳ Django migration, group rooms, reactions, CI/CD         |
 
-Backend (Phase 2)
+🤝 Contributing
 
-Django migration
+    Fork & clone
+    Create feature branch (git checkout -b feature/amazing-feature)
+    Commit (git commit -m 'Add amazing feature')
+    Push (git push origin feature/amazing-feature)
+    Open a Pull Request
 
-Django ORM / PostgreSQL
-
-More advanced auth and security features
-
-## 🗺 Roadmap
-
-Note: These are estimates and subject to change.
-
-Months 1–4
-
-Build basic authentication (sign-up + login)
-
-Set up the initial Flask backend
-
-Implement email-based verification
-
-Begin planning real-time messaging system structure
-
-Month 5–8 (planned next phase)
-
-Add WebSocket support for real-time chat
-
-Create user profiles and basic UI
-
-Store messages in a persistent database
-
-Start refactoring frontend into TypeScript
-
-Month 9–12 (future expansion)
-
-Migrate backend from Flask → Django
-
-Add more robust auth (password reset, sessions, tokens)
-
-Improve UI/UX
-
-Add features like group chats or message reactions
-
-## 📁 Project Status
-
-Currently in early development.
-Core authentication and backend setup are in progress.
+📄 License
+MIT © Omri Morgan
+📫 Stay in Touch
+Star ⭐ this repo to follow along as commits land and milestones get crushed. Questions? Open an issue or DM me on Twitter.

@@ -7,4 +7,9 @@ token.json
 
 # files in Server
 .instance
+.env
+
+
+# Archives
+**/ARCHIVE
 

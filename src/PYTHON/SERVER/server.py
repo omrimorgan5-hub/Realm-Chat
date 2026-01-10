@@ -5,8 +5,15 @@ from flask_cors import CORS
 import hashlib
 import sys
 from datetime import datetime
-import functions
-from functions import *  
+
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+
+import src.PYTHON.Utils.functions
+from src.PYTHON.Utils.functions import * 
+
+db_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\accounts.db'
+
 
 def server():
 
@@ -14,7 +21,7 @@ def server():
     CORS(app) 
     
     # 2. Configure Flask-SQLAlchemy on the main app instance
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///accounts.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
     
     # 3. Associate the imported 'db' object with this app instance

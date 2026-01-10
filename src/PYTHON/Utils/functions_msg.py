@@ -18,6 +18,7 @@ temp_app_for_db.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///messages.db'
 temp_app_for_db.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
 db = SQLAlchemy(temp_app_for_db)
 
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
     sender = db.Column(db.String(80), unique=False, nullable=False)
@@ -29,6 +30,7 @@ class User(db.Model):
     
     def __repr__(self):
         return f'<User {self.sender}>'
+
 
 
 def send_message_realm():
@@ -72,8 +74,5 @@ def send_message_realm():
     print(f"sent message {msg_id}.")
 
     return jsonify({"message": "Success."}), 201
-    
-    
-    
     
     

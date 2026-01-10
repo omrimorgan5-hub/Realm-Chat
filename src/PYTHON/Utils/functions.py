@@ -27,7 +27,8 @@ temp_app_for_db.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(temp_app_for_db)
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/MAIN/ASSETS/credentials.json'
+Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/credentials.json'
+Token_json = "C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/token.json"
 # --- DATABASE MODEL ---
 
 class User(db.Model):
@@ -57,12 +58,12 @@ def hash_password(password: str) -> str: # has passed tests
     """Hashes the password using SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-def gmail_authenticate(): # has passed tests
+def gmail_authenticate(): # has failed tests
     """Authenticates with Gmail API for sending emails."""
     # This logic remains the same
     creds = None
-    if os.path.exists("token.json"):
-        creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+    if os.path.exists(Token_json):
+        creds = Credentials.from_authorized_user_file(Token_json, SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -73,15 +74,16 @@ def gmail_authenticate(): # has passed tests
             token.write(creds.to_json())
     return build('gmail', 'v1', credentials=creds)
 
-def send_email(recipient, otp, username): # has passed tests
+def send_email(recipient, otp, username): # has failed tests
     """Sends the OTP code via Gmail API."""
+    print("Sending")
     service = gmail_authenticate()
     message = MIMEText(f"hello {username}! Your OTP is: {otp}")
     message['to'] = recipient
     message['subject'] = "Your OTP Code"
     raw = base64.urlsafe_b64encode(message.as_bytes()).decode()
     service.users().messages().send(userId="me", body={'raw': raw}).execute()
-    print(f"OTP {otp} sent to {recipient}")
+    print(f"OTP {otp} sent to {username}")
 
 # --- FLASK VIEW FUNCTIONS (ROUTES) ---
 
@@ -146,7 +148,7 @@ def signup(): # has passed tests
     
     print(f"New user registered: {username}")
 
-    print(f"Sent {otp_code} to new user {username}")
+
     return jsonify({"message": "Signup successful! OTP sent."}),200
 
 

@@ -32,7 +32,7 @@ signupButton.addEventListener('click', async (event) => {
 
         const data = await response.json();
 
-        if (response.status === 201) {
+        if (response.status === 200) {
             console.log("Signup successful:", data);
             alert("Signup successful! You can now verify OTP.");
 

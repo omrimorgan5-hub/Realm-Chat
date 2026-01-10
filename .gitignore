@@ -1,31 +1,12 @@
-# JSON
-accounts.json
-credentials.json
-token.json
-
-# Server files
-**/instance
-
-
-# Archives
-**/ARCHIVE
-
-# pycache
-**/__pycache__
-
-# Tests
-**/TESTS
-
-# .env
-.env
+**/TEST
 **/venv
-
-# Assets
+**/__pycache__
+.env
+token.json
+credentials.json
+**/Node.js
+**/Django
+**/DATA
 **/ASSETS
-
-# vscode
+**/__init__.py
 .vscode
-
-# MISC
-**/R.md
-

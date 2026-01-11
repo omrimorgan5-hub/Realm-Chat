@@ -43,17 +43,18 @@ loginButton.addEventListener('click', async (event) => {
         if (response.ok) {
             console.log("Success:", data);
             alert("Login successful!");
-            // Optional: redirect or clear form
+            usernameInput.value = "";
+            passwordInput.value = "";
+            window.location.replace("../../../LANDING/test.html")
         } else {
             console.error("Error:", data);
             alert(data.message || "Login failed.");
+            passwordInput.value = "";
         }
     } catch (err) {
         console.error("Network error:", err);
         alert("Could not connect to server.");
     }
-    usernameInput.value = "";
-    passwordInput.value = "";
-    window.location.replace("../../../LANDING/test.html")
+    
 
 });

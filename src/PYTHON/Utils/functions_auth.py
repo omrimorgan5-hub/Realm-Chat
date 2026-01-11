@@ -1,5 +1,6 @@
 import random
 import os
+import sys
 import threading
 import re
 from flask import Flask, request, jsonify # Flask items are needed for request/jsonify
@@ -13,6 +14,14 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 
+
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+import src.PYTHON.Utils.utils_classes
+from src.PYTHON.Utils.utils_classes import *
+auth_backend = backend_auth()
+
+
 # --- GLOBAL SETUP ---
 
 # NOTE: The Flask app object must be defined *once* in your server file (e.g., server.py)
@@ -21,32 +30,14 @@ from google.auth.transport.requests import Request
 
 # We define a temporary Flask app instance just for SQLAlchemy configuration
 # This instance will be configured to use SQLite.
-temp_app_for_db = Flask(__name__)
-temp_app_for_db.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///accounts.db'
-temp_app_for_db.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
-db = SQLAlchemy(temp_app_for_db)
+
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/credentials.json'
 Token_json = "C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/token.json"
 # --- DATABASE MODEL ---
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True) 
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(64), nullable=False)
-    
-    birthday = db.Column(db.String(10), nullable=False)
-    display_name = db.Column(db.String(120))
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    
-    is_verified = db.Column(db.Boolean, default=False)
-    otp_code = db.Column(db.String(6), nullable=True) 
-    otp_expires_at = db.Column(db.DateTime, nullable=True)
-    
-    def __repr__(self):
-        return f'<User {self.username}>'
+
 
 # --- UTILITY FUNCTIONS ---
 
@@ -58,7 +49,7 @@ def hash_password(password: str) -> str: # has passed tests
     """Hashes the password using SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
 
-def gmail_authenticate(): # has failed tests
+def gmail_authenticate(): # has passed tests
     """Authenticates with Gmail API for sending emails."""
     # This logic remains the same
     creds = None
@@ -74,7 +65,7 @@ def gmail_authenticate(): # has failed tests
             token.write(creds.to_json())
     return build('gmail', 'v1', credentials=creds)
 
-def send_email(recipient, otp, username): # has failed tests
+def send_email(recipient, otp, username): # has passed tests
     """Sends the OTP code via Gmail API."""
     print("Sending")
     service = gmail_authenticate()
@@ -87,7 +78,7 @@ def send_email(recipient, otp, username): # has failed tests
 
 # --- FLASK VIEW FUNCTIONS (ROUTES) ---
 
-def signup(): # has passed tests
+def signup():
     """Handles new user registration, storing data in SQLite."""
     info_user = request.get_json()
 
@@ -103,9 +94,9 @@ def signup(): # has passed tests
     if not all([username, password, birthday, display_name, email]):
         return jsonify({"message": "All fields are required."}), 400
 
-    # Validation (Remains the same)
+    # Validation
     if len(password) < 8 or len(password) > 64:
-        return jsonify({"message": "Password must be between 8 and 64 characters."}, 400)
+        return jsonify({"message": "Password must be between 8 and 64 characters."}), 400
     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
         return jsonify({"message": "Invalid email format."}), 400
     try:
@@ -114,19 +105,20 @@ def signup(): # has passed tests
         return jsonify({"message": "Invalid birthday format."}), 400
     
     # Check for duplicate using SQLAlchemy
-    if User.query.filter_by(username=username).first():
-        return jsonify({"message": "Username already taken."}), 409
-    if User.query.filter_by(email=email).first():
-        return jsonify({"message": "Email already registered."}), 409
-    
+    # These calls now work because of the 'with current_app.app_context()' we added to backend_auth
 
+
+    if auth_backend.get_username(username=username):
+        return jsonify({"message": "Username already taken."}), 409
+    if auth_backend.get_email(email=email):
+        return jsonify({"message": "Email already registered."}), 409
 
     hashed_password = hash_password(password)
     otp_code = gen_otp()
     otp_expiration = datetime.now() + timedelta(minutes=10)
 
-    new_user = User(
-        
+    # UPDATED: Use User_auth instead of User
+    new_user = User_auth(
         password=hashed_password,
         birthday=birthday,
         username=username,
@@ -134,23 +126,21 @@ def signup(): # has passed tests
         email=email,
         otp_code=otp_code,
         otp_expires_at=otp_expiration
-        
-        )
+    )
 
     db.session.add(new_user)
     db.session.commit() 
 
+    # FIXED: Added () to .start()
     email_thread = threading.Thread(
         target=send_email,
         args=(email, otp_code, username)
     )
-    email_thread.start
+    email_thread.start() # Added parentheses here
     
     print(f"New user registered: {username}")
 
-
-    return jsonify({"message": "Signup successful! OTP sent."}),200
-
+    return jsonify({"message": "Signup successful! OTP sent."}), 200
 
 
 def login(): # has passed tests
@@ -168,10 +158,10 @@ def login(): # has passed tests
 
     hashed_password = hash_password(password)
     
-    user = User.query.filter_by(username=username).first()
+    user = auth_backend.get_username(username=username)
 
-    if user and user.password == hashed_password:
-        if not user.is_verified:
+    if user and auth_backend.get_password(password=hashed_password):
+        if auth_backend.get_is_verified(is_verified=False):
              return jsonify({"message": "Account not verified. Please verify email."}), 403 
         
         return jsonify({"message": "Login successful!"}), 200
@@ -233,5 +223,6 @@ def verify_otp(): # has passed tests
         return jsonify({"message": "Invalid OTP."}), 401
 
 
-    
-    
+
+
+

@@ -1,6 +1,7 @@
 import random
 import os
 import uuid
+from classes import backend_msg
 import threading
 import re
 from flask import Flask, request, jsonify, make_response # Flask items are needed for request/jsonify
@@ -13,23 +14,11 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 
-temp_app_for_db = Flask(__name__)
-temp_app_for_db.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///messages.db'
-temp_app_for_db.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
-db = SQLAlchemy(temp_app_for_db)
 
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True) 
-    sender = db.Column(db.String(80), unique=False, nullable=False)
-    recipitent = db.Column(db.String(120), unique=False, nullable=False)
-    msg_data = db.Column(db.String(500), unique=False, nullable=False)
-    time_sent = db.Column(db.DateTime, default=datetime.now, nullable=False)
-    msg_id = db.Column(db.String(36), unique=True, nullable=False)
-    
-    
-    def __repr__(self):
-        return f'<User {self.sender}>'
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+import utils_classes
+from utils_classes import *
+msg_backend = backend_msg()
 
 
 

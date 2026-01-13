@@ -10,3 +10,6 @@ credentials.json
 **/ASSETS
 **/__init__.py
 .vscode
+**/internal_info.txt
+**/internal_info.docx
+**/~$ternal_info.docx

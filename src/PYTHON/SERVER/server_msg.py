@@ -1,51 +1,49 @@
-import json
 import os
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import hashlib
 import sys
-from datetime import datetime
+from flask import Flask
+from flask_cors import CORS
 
+# 1. Fix pathing
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
 
-import src.PYTHON.Utils.utils_classes
-from src.PYTHON.Utils.utils_classes import *
-import src.PYTHON.Utils.functions_msg
-from src.PYTHON.Utils.functions_msg import *
+# 2. Import 'db' specifically
+from src.PYTHON.Utils.utils_classes import db
 
-db_msg_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\messages.db'
-db_auth_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\accounts.db'
-
-
-
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+db_auth_path = os.path.join(BASE_DIR, "src", "DATA", "DB", "accounts.db")
+db_msg_path = os.path.join(BASE_DIR, "src", "DATA", "DB", "messages.db")
 
 def server():
-
+    # Adding 'global db' ensures the function looks outside for the variable
+    global db 
+    
     app = Flask(__name__)
-    CORS(messaging) 
+    CORS(app) 
     
-    # 2. Configure Flask-SQLAlchemy on the main app instance
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_msg_path}'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_auth_path}'
     app.config['SQLALCHEMY_BINDS'] = {
-    'auth': f'sqlite:///{db_auth_path}',
-    'msg':  f'sqlite:///{db_msg_path}'
-}
-    
-    # 3. Associate the imported 'db' object with this app instance
+        'auth': f'sqlite:///{db_auth_path}',
+        'msg':  f'sqlite:///{db_msg_path}'
+    }
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # 3. Initialize the app
+
+
     db.init_app(app)
 
-    # 4. Create the database tables if they don't exist (CRITICAL STEP)
+    # 4. NOW import the functions (Delayed import to prevent RuntimeError)
+    import src.PYTHON.Utils.functions_msg as msg_funcs
+
     with app.app_context():
         db.create_all()
 
-    # 5. Add URL Rules
-    app.add_url_rule('/send_msg', view_func=send_message_realm ,methods=['POST'])
-    
+    # URL Rules
+    app.add_url_rule('/signup', view_func=msg_funcs.send_message_realm, methods=['POST'])
 
-    print("Server running at http://0.0.0.0:5001")
-    backend_msg = backend_msg()
-    app.run(debug=True, host='0.0.0.0', port=5001)
+
+    print("Server running at http://0.0.0.0:5000")
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
 if __name__ == "__main__":
     server()

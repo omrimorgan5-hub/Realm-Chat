@@ -16,9 +16,14 @@ from google.auth.transport.requests import Request
 
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+
+
 import src.PYTHON.Utils.utils_classes
 from src.PYTHON.Utils.utils_classes import *
+import src.PYTHON.SERVER.server_auth
+from src.PYTHON.SERVER.server_auth import *
+
 auth_backend = backend_auth()
 
 
@@ -41,13 +46,18 @@ Token_json = "C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/token.
 
 # --- UTILITY FUNCTIONS ---
 
+
 def gen_otp(): # has passed tests
     """Generates a random 6-digit string OTP."""
     return str(random.randint(100000, 999999)) 
 
+
+
 def hash_password(password: str) -> str: # has passed tests
     """Hashes the password using SHA-256."""
     return hashlib.sha256(password.encode()).hexdigest()
+
+
 
 def gmail_authenticate(): # has passed tests
     """Authenticates with Gmail API for sending emails."""
@@ -65,6 +75,10 @@ def gmail_authenticate(): # has passed tests
             token.write(creds.to_json())
     return build('gmail', 'v1', credentials=creds)
 
+
+
+
+
 def send_email(recipient, otp, username): # has passed tests
     """Sends the OTP code via Gmail API."""
     print("Sending")
@@ -76,7 +90,15 @@ def send_email(recipient, otp, username): # has passed tests
     service.users().messages().send(userId="me", body={'raw': raw}).execute()
     print(f"OTP {otp} sent to {username}")
 
+
+
 # --- FLASK VIEW FUNCTIONS (ROUTES) ---
+
+"""  
+signup function currently passed all tests prepared-
+for next steps of development.
+"""
+
 
 def signup():
     """Handles new user registration, storing data in SQLite."""
@@ -143,6 +165,13 @@ def signup():
     return jsonify({"message": "Signup successful! OTP sent."}), 200
 
 
+
+"""  
+login function currently passed all tests prepared-
+for next steps of development.
+"""
+
+
 def login(): # has passed tests
     """Handles user login authentication and checks for verification status."""
     info_user = request.get_json()
@@ -161,7 +190,7 @@ def login(): # has passed tests
     user = auth_backend.get_username(username=username)
 
     if user and auth_backend.get_password(password=hashed_password):
-        if auth_backend.get_is_verified(is_verified=False):
+        if not auth_backend.get_is_verified:
              return jsonify({"message": "Account not verified. Please verify email."}), 403 
         
         return jsonify({"message": "Login successful!"}), 200
@@ -169,7 +198,20 @@ def login(): # has passed tests
     return jsonify({"message": "Invalid username or password."}), 401
 
 
-def verify_otp(): # has passed tests
+
+
+
+"""
+verify otp function used for account verification-
+work in progress current version is to be reworked due to issues-
+internaly.
+
+UPDATE: I have fixed core issues will continue to work internally.
+"""
+
+
+
+def verify_otp(): # hasn't passed tests 2/3 passed
     """Handles OTP submission, validates the code, and verifies the user."""
     info_user = request.get_json()
 
@@ -182,7 +224,7 @@ def verify_otp(): # has passed tests
     if not all([otp_entered, username]):
         return jsonify({"message": "Username and OTP are required."}), 400
     
-    user = User.query.filter_by(username=username).first()
+    user = auth_backend.get_username(username=username)
     
     if not user:
         return jsonify({"message": "Invalid username."}), 401
@@ -191,36 +233,45 @@ def verify_otp(): # has passed tests
         return jsonify({"message": "Account already verified."}), 409
 
     # 1. Check for expiration
-    if user.otp_expires_at < datetime.now():
-        # Clean up expired fields
-        user.otp_code = None
-        user.otp_expires_at = None
-        db.session.commit()
-        email = User.query.filter_by(email=email).first()
-        print(email)
+    if user.otp_expires_at < datetime.utcnow():
+
         otp_code = gen_otp()
+
         email_thread = threading.Thread(
-            target=send_email,
-            args=(email, otp_code, username)
+        target=send_email,
+        args=(user.email, otp_code, username)
         )
-        email_thread.start
+
+        email_thread.start()
+
+        user.otp_code = otp_code
+        user.otp_expires_at = datetime.utcnow() + timedelta(minutes=10)
+        db.session.add(user)
         db.session.commit()
-        return jsonify({"message": "OTP has expired. You have been sent a new code."}, 401)
+        return jsonify({"message": "OTP has expired. please check your email"}), 401
     
     if user.otp_code is None:
-        return jsonify({"message": "OTP Entered is either expired or is invalid you may also already be verified."}, 409)
+        return jsonify({"message": "OTP Entered is either expired or is invalid you may also already be verified."}), 409
 
     # 2. Check for code match
     if user.otp_code == str(otp_entered):
         # Update user status and clear OTP fields
-        user.is_verified = True
-        user.otp_code = None
-        user.otp_expires_at = None
+
+        user.is_verified=True
+        user.otp_code=None
+        user.otp_expires_at=None
+        db.session.add(user)
         db.session.commit()
         
         return jsonify({"message": "OTP verified, continue."}), 200
     else:
         return jsonify({"message": "Invalid OTP."}), 401
+
+
+
+
+
+
 
 
 

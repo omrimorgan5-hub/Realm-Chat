@@ -35,7 +35,7 @@ verify_otp.addEventListener('click', async (event) => {
 
         const data = await response.json();
 
-        if (response.status === 200) {
+        if (response.ok) {
             console.log("Success:", data);
             alert("verification successful!");
             window.location.replace("../LOGIN/login.html");
@@ -43,6 +43,7 @@ verify_otp.addEventListener('click', async (event) => {
         } else {
             console.error("Error:", data);
             alert(data.message || "verification failed.");
+            code.value = "";
         }
 
     } catch (err) {

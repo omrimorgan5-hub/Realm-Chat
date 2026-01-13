@@ -48,19 +48,22 @@ python app.py
 cd frontend
 npm install -g live-server
 live-server --port=5500
-
+```
+```bash
 Realm-Chat/
 ├─ backend/          # Flask code (will move to django/ later)
 ├─ frontend/         # HTML, CSS, JS → TS
 ├─ docs/             # Screenshots, ER diagrams, API spec
 ├─ tests/            # Pytest + Jest suites (WIP)
 └─ README.md
-
+```
+```bash
 | Months | Milestone                                                 |
 | ------ | --------------------------------------------------------- |
 | 1-4    | ✅ Auth (signup/login), e-mail verification, basic WS chat |
 | 5-8    | 🔄 TypeScript refactor, persistent DB, user profiles      |
 | 9-12   | ⏳ Django migration, group rooms, reactions, CI/CD         |
+```
 
 🤝 Contributing
 
@@ -72,5 +75,6 @@ Realm-Chat/
 
 📄 License
 MIT © Omri Morgan
+
 📫 Stay in Touch
 Star ⭐ this repo to follow along as commits land and milestones get crushed. Questions? Open an issue or DM me on Twitter.

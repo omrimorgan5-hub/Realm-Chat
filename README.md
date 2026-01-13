@@ -1,80 +1,79 @@
 # Realm Chat 🗨️
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
 [![Status](https://img.shields.io/badge/status-building-important)](https://github.com/omrimorgan5-hub/Realm-Chat)
 
-A full-stack real-time chat application built as part of my college-application portfolio.  
-The codebase starts in plain JavaScript and Flask, then progressively migrates to **TypeScript** and **Django** for a production-grade, scalable architecture.
+An evolving real-time chat application. This repo contains a lightweight Python backend, simple static frontend pages, and utilities used during development.
 
-Follow the journey from MVP to polished product—PRs, issues, and feedback are welcome!
+Key points
 
----
+- **Auth:** e-mail based authentication and token handling
+- **Realtime:** WebSocket-powered messaging (backend + frontend)
+- **Storage:** JSON file store used in development; PostgreSQL migration planned
 
-## ✨ Features (so far)
+Tech roadmap (summary)
 
-* Secure e-mail based authentication (Flask-JWT)
-* Real-time messaging via WebSockets
-* Responsive, vanilla-JS frontend (TypeScript refactor in progress)
-* JSON file store → PostgreSQL migration planned (Completed)
+- Frontend: JavaScript → TypeScript
+- Backend: Flask (MVP) → Django/Django-Channels (scale)
+- Database: JSON files → PostgreSQL
+- Deploy: Local development → Docker / cloud hosting
 
----
+Quick start (local dev)
 
-## 🛠 Tech Roadmap
+1. Clone repository
 
-| Layer        | Phase 1 (MVP)               | Phase 2 (Scale)            |
-|--------------|-----------------------------|----------------------------|
-| **Frontend** | JavaScript, HTML, CSS       | TypeScript + Vite          |
-| **Backend**  | Flask, Flask-SocketIO       | Django, Django-Channels    |
-| **Database** | JSON Flat Files             | PostgreSQL                 |
-| **Auth**     | e-mail verification         | JWT + refresh tokens       |
-| **Deploy**   | localhost                   | Docker + Railway / Render  |
+```powershell
+git clone <repo-url>
+cd Chat-Project
+```
 
----
+2. Create and activate a Python virtual environment
 
-## 🚀 Quick Start (local dev)
+Windows (PowerShell):
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
+macOS / Linux:
 ```bash
-# 1. Clone repo
-git clone https://github.com/omrimorgan5-hub/Realm-Chat.git
-cd Realm-Chat
+python -m venv .venv
+source .venv/bin/activate
+```
 
-# 2. Backend (Flask)
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+3. Install Python dependencies
+
+```powershell
 pip install -r requirements.txt
-python app.py
-
-# 3. Frontend (live-server or any static server)
-cd frontend
-npm install -g live-server
-live-server --port=5500
-```
-```bash
-Realm-Chat/
-├─ backend/          # Flask code (will move to django/ later)
-├─ frontend/         # HTML, CSS, JS → TS
-├─ docs/             # Screenshots, ER diagrams, API spec
-├─ tests/            # Pytest + Jest suites (WIP)
-└─ README.md
-```
-```bash
-| Months | Milestone                                                 |
-| ------ | --------------------------------------------------------- |
-| 1-4    | ✅ Auth (signup/login), e-mail verification, basic WS chat |
-| 5-8    | 🔄 TypeScript refactor, persistent DB, user profiles      |
-| 9-12   | ⏳ Django migration, group rooms, reactions, CI/CD         |
 ```
 
-🤝 Contributing
+4. Configure credentials
 
-    Fork & clone
-    Create feature branch (git checkout -b feature/amazing-feature)
-    Commit (git commit -m 'Add amazing feature')
-    Push (git push origin feature/amazing-feature)
-    Open a Pull Request
+- Ensure `credentials.json` and `token.json` are present in `src/DATA/JSON/` or configured according to your environment.
 
-📄 License
+5. Run servers (examples)
+
+```powershell
+python src/PYTHON/SERVER/server_auth.py
+python src/PYTHON/SERVER/server_msg.py
+```
+
+Open the frontend pages in a browser from `src/PYTHON/WEB/` (for example `LOGIN/login.html`).
+
+Repository layout (top-level)
+
+- `src/` — application source (server, web, utils)
+- `docs/` — project documentation
+- `requirements.txt` — Python deps
+- `LICENSE` — project license
+
+Contributing
+
+- Fork the repository, create a branch `feature/your-change`, make focused commits, and open a pull request.
+- Run tests before submitting: `python src/PYTHON/Utils/TEST/test.py`
+
+License
+
 MIT © Omri Morgan
 
-📫 Stay in Touch
-Star ⭐ this repo to follow along as commits land and milestones get crushed. Questions? Open an issue or DM me on Twitter.
+Need help or want a PR to be reviewed? Open an issue or create a pull request on GitHub.

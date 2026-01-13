@@ -29,13 +29,6 @@ auth_backend = backend_auth()
 
 # --- GLOBAL SETUP ---
 
-# NOTE: The Flask app object must be defined *once* in your server file (e.g., server.py)
-# and passed or imported here. For simplicity in this functions file, 
-# we'll assume the Flask app is available for SQLAlchemy config.
-
-# We define a temporary Flask app instance just for SQLAlchemy configuration
-# This instance will be configured to use SQLite.
-
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/credentials.json'
@@ -255,7 +248,7 @@ def verify_otp(): # hasn't passed tests 2/3 passed
 
     # 2. Check for code match
     if user.otp_code == str(otp_entered):
-        # Update user status and clear OTP fields
+
 
         user.is_verified=True
         user.otp_code=None

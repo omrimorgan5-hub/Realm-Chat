@@ -15,7 +15,7 @@ Follow the journey from MVP to polished product—PRs, issues, and feedback are 
 * Secure e-mail based authentication (Flask-JWT)
 * Real-time messaging via WebSockets
 * Responsive, vanilla-JS frontend (TypeScript refactor in progress)
-* JSON file store → PostgreSQL migration planned
+* JSON file store → PostgreSQL migration planned (Completed)
 
 ---
 

@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 2. Configure secrets
 
-- Copy `credentials.json` and `token.json` into `src/DATA/JSON/` as needed.
+- Add `credentials.json` and `token.json` into `src/DATA/JSON/` as needed.
 
 3. Run the servers
 
@@ -52,7 +52,6 @@ Repository layout
 Where to get help
 
 - Check `docs/ARCHITECTURE.md` for component descriptions.
-- For developer notes see `docs/Info.md` and `docs/internal_info.txt`.
 
 License
 

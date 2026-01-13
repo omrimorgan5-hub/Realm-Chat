@@ -4,7 +4,7 @@ This document explains how to prepare a development environment for Chat-Project
 
 Prerequisites
 
-- Python 3.10+ (or the version used in `requirements.txt`)
+- Python 3.10+ (3.14 reccomended.)
 - Git
 
 Steps
@@ -12,7 +12,7 @@ Steps
 1. Clone the repository:
 
 ```powershell
-git clone <repo-url>
+git clone https://github.com/omrimorgan5-hub/Realm-Chat.git
 cd Chat-Project
 ```
 
@@ -32,6 +32,7 @@ pip install -r requirements.txt
 4. Prepare credentials and tokens
 
 - Copy `credentials.json` and `token.json` into `src/DATA/JSON/` or ensure `credentials.json` in root is configured.
+(Must provide your own.)
 
 5. Environment variables (optional)
 
@@ -42,7 +43,7 @@ Run smoke test
 - Run the included test script to verify utilities:
 
 ```powershell
-python src/PYTHON/Utils/TEST/test.py
+python src/PYTHON/TEST/test.py
 ```
 
 Notes

@@ -25,10 +25,10 @@ Accessing the frontend
 
 Testing
 
-- Run the unit/util test in `src/PYTHON/Utils/TEST/test.py`:
+- Run the unit/util test in `src/PYTHON/TEST/test.py`:
 
 ```powershell
-python src/PYTHON/Utils/TEST/test.py
+python src/PYTHON/TESTS/test.py
 ```
 
 Logs and troubleshooting

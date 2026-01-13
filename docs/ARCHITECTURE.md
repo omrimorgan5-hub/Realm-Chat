@@ -2,7 +2,7 @@
 
 Overview
 
-Chat-Project is organized into a small set of concerns:
+Realm is organized into a small set of concerns:
 
 - Authentication: `src/PYTHON/SERVER/server_auth.py` handles authentication flows and token management.
 - Messaging: `src/PYTHON/SERVER/server_msg.py` implements message routing/handling.
@@ -18,7 +18,7 @@ Component responsibilities
 
 - server_msg.py
   - Receive messages from clients
-  - Route and store messages (or forward to DB)
+  - Route and store messages (and forward to DB)
 
 - Frontend (WEB)
   - Simple static UI, uses local JS to call backend endpoints

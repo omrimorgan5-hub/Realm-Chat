@@ -9,14 +9,15 @@ import hashlib
 from datetime import datetime, timedelta
 import base64
 
-# binds
-db_auth_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\accounts.db'
-db_msg_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\messages.db'
+# binds (use project-relative paths)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+db_auth_path = os.path.join(BASE_DIR, "data", "db", "accounts.db")
+db_msg_path = os.path.join(BASE_DIR, "data", "db", "messages.db")
 
 
 
 # User_auth class
-db_auth_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\accounts.db'
+
 
 
 db = SQLAlchemy()
@@ -43,7 +44,6 @@ class User_auth(db.Model):
 
 
 # user_msg class
-db_msg_path = r'C:\Users\Omri.Morgan02\Downloads\Chat-Project\src\DATA\DB\messages.db'
 
 
 

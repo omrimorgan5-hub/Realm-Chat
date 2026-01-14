@@ -33,9 +33,9 @@ def test_hash_password():
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
-
-Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/MAIN/ASSETS/JSON/credentials.json'
-Token_json = "C:/Users/Omri.Morgan02/Downloads/Chat-Project/MAIN/ASSETS/JSON/token.json"
+# Secrets are not required for unit tests. For integration tests, place
+# `credentials.json` and `token.json` under `src/chat_project/data/json/` or
+# set credentials via environment variables.
 
 
 

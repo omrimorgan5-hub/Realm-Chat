@@ -15,10 +15,20 @@ from google.auth.transport.requests import Request
 import sys
 
 
-# Use package imports for test helper functions
-from chat_project.api.auth.handlers import send_email
+from chat_project.api.auth.handlers import gen_otp, hash_password
 
-send_email("omrimorgan5@gmail.com", "232323", "Shadow680")
+
+def test_gen_otp():
+    otp = gen_otp()
+    assert isinstance(otp, str)
+    assert len(otp) == 6
+    assert otp.isdigit()
+
+
+def test_hash_password():
+    h = hash_password("abc123")
+    assert isinstance(h, str)
+    assert len(h) == 64
 
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']

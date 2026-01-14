@@ -15,10 +15,10 @@ Coding guidelines
 
 Testing
 
-- Run the provided test script:
+- Run tests locally (set PYTHONPATH to `src`):
 
 ```powershell
-python src/PYTHON/Utils/TEST/test.py
+$env:PYTHONPATH='src'; python -m pytest
 ```
 
 Submitting a PR

@@ -7,28 +7,28 @@ Running servers
 - Authentication server:
 
 ```powershell
-python src/PYTHON/SERVER/server_auth.py
+python src\chat_project\api\auth\server.py
 ```
 
 - Messaging server:
 
 ```powershell
-python src/PYTHON/SERVER/server_msg.py
+python src\chat_project\api\messages\server.py
 ```
 
 Accessing the frontend
 
-- Open the static HTML pages in `src/PYTHON/WEB/` with a browser, for example:
-  - `src/PYTHON/WEB/LOGIN/login.html`
-  - `src/PYTHON/WEB/SIGNUP/signup.html`
-  - `src/PYTHON/WEB/OTP/otp_auth.html`
+- Open the static HTML pages in `src/chat_project/web_static/` with a browser, for example:
+  - `src/chat_project/web_static/login/login.html`
+  - `src/chat_project/web_static/signup/signup.html`
+  - `src/chat_project/web_static/otp/otp_auth.html`
 
 Testing
 
-- Run the unit/util test in `src/PYTHON/TEST/test.py`:
+- Run the unit tests (set PYTHONPATH to `src`):
 
 ```powershell
-python src/PYTHON/TESTS/test.py
+$env:PYTHONPATH='src'; python -m pytest
 ```
 
 Logs and troubleshooting

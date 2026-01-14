@@ -7,10 +7,10 @@ A lightweight chat project with a Python backend and static web frontend. This r
 Quick links
 
 - Project root: `.`
-- Server code: `src/PYTHON/SERVER`
-- Frontend pages: `src/PYTHON/WEB`
-- Utilities & tests: `src/PYTHON/Utils`
-- Data files: `src/DATA/JSON`
+- Server code: `src/chat_project/api` (auth and messages servers)
+- Frontend pages: `src/chat_project/web_static`
+- Utilities & models: `src/chat_project/models` and tests in `tests/unit`
+- Data files: `src/chat_project/data/json`
 
 Quick start (Windows)
 
@@ -24,23 +24,23 @@ pip install -r requirements.txt
 
 2. Configure secrets
 
-- Add `credentials.json` and `token.json` into `src/DATA/JSON/` as needed.
+- Add `credentials.json` and `token.json` into `src/chat_project/data/json/` as needed (these files are gitignored).
 
 3. Run the servers
 
 - Start authentication server (if required):
 
 ```powershell
-python src/PYTHON/SERVER/server_auth.py
+python src\chat_project\api\auth\server.py
 ```
 
 - Start messaging server (if required):
 
 ```powershell
-python src/PYTHON/SERVER/server_msg.py
+python src\chat_project\api\messages\server.py
 ```
 
-4. Open the frontend pages in a browser from `src/PYTHON/WEB/` (e.g., `LOGIN/login.html`).
+4. Open the frontend pages in a browser from `src/chat_project/web_static/` (e.g., `src/chat_project/web_static/login/login.html`).
 
 Repository layout
 

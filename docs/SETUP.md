@@ -31,8 +31,7 @@ pip install -r requirements.txt
 
 4. Prepare credentials and tokens
 
-- Copy `credentials.json` and `token.json` into `src/DATA/JSON/` or ensure `credentials.json` in root is configured.
-(Must provide your own.)
+- Copy `credentials.json` and `token.json` into `src/chat_project/data/json/`. (Must provide your own.)
 
 5. Environment variables (optional)
 

@@ -49,16 +49,16 @@ pip install -r requirements.txt
 
 4. Configure credentials
 
-- Ensure `credentials.json` and `token.json` are present in `src/DATA/JSON/` or configured according to your environment.
+- Ensure `credentials.json` and `token.json` are present in `src/chat_project/data/json/` or configured according to your environment (these files are intentionally gitignored).
 
 5. Run servers (examples)
 
 ```powershell
-python src/PYTHON/SERVER/server_auth.py
-python src/PYTHON/SERVER/server_msg.py
+python src\chat_project\api\auth\server.py
+python src\chat_project\api\messages\server.py
 ```
 
-Open the frontend pages in a browser from `src/PYTHON/WEB/` (for example `LOGIN/login.html`).
+Open the frontend pages in a browser from `src/chat_project/web_static/` (for example `src/chat_project/web_static/login/login.html`).
 
 Repository layout (top-level)
 
@@ -70,7 +70,7 @@ Repository layout (top-level)
 Contributing
 
 - Fork the repository, create a branch `feature/your-change`, make focused commits, and open a pull request.
-- Run tests before submitting: `python src/PYTHON/Utils/TEST/test.py`
+- Run tests before submitting: set `PYTHONPATH=src` and run `python -m pytest` (or use your test runner of choice).
 
 License
 

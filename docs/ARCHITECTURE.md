@@ -4,11 +4,11 @@ Overview
 
 Realm is organized into a small set of concerns:
 
-- Authentication: `src/PYTHON/SERVER/server_auth.py` handles authentication flows and token management.
-- Messaging: `src/PYTHON/SERVER/server_msg.py` implements message routing/handling.
-- Frontend: static pages under `src/PYTHON/WEB` provide login, signup and OTP flows.
-- Utilities: `src/PYTHON/Utils` contains helper functions and test code.
-- Data: `src/DATA/JSON` stores local JSON credentials and tokens.
+- Authentication: `src/chat_project/api/auth/server.py` handles authentication flows and token management (handlers live in `src/chat_project/api/auth/handlers.py`).
+- Messaging: `src/chat_project/api/messages/server.py` implements message routing/handling (handlers live in `src/chat_project/api/messages/handlers.py`).
+- Frontend: static pages under `src/chat_project/web_static` provide login, signup and OTP flows.
+- Models & Utilities: `src/chat_project/models` contains SQLAlchemy models and backend helpers.
+- Data: `src/chat_project/data/json` stores local JSON credentials and tokens; DB files live under `src/chat_project/data/db`.
 
 Component responsibilities
 

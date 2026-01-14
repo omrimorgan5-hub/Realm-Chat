@@ -4,12 +4,26 @@ from flask import Flask
 from flask_cors import CORS
 
 # Package imports
+try:
+    from chat_project.models.models import db
+    from chat_project.api.auth import handlers as auth_funcs
+except ModuleNotFoundError:
+    # Running without package context: add project 'src' to sys.path and retry
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+    from chat_project.models.models import db
+    from chat_project.api.auth import handlers as auth_funcs
+
+
+
+
 from chat_project.models.models import db
 from chat_project.api.auth import handlers as auth_funcs
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-db_auth_path = os.path.join(BASE_DIR, "src", "chat_project", "data", "db", "accounts.db")
-db_msg_path = os.path.join(BASE_DIR, "src", "chat_project", "data", "db", "messages.db")
+db_auth_path = os.getenv("DB_AUTH_PATH")
+db_msg_path = os.getenv("DB_MESSAGE_PATH")
 
 def server():
     # Adding 'global db' ensures the function looks outside for the variable

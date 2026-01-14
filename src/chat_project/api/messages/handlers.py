@@ -1,5 +1,6 @@
 import random
 import os
+import sys
 import uuid
 import threading
 import re
@@ -15,7 +16,17 @@ from google.auth.transport.requests import Request
 
 
 # Package imports (models and helpers)
-from chat_project.models.models import db, User_msg, backend_msg
+try:
+    from chat_project.models.models import db, User_msg, backend_msg
+except ModuleNotFoundError:
+    # Running without package context: add project 'src' to sys.path and retry
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+    from chat_project.models.models import db, User_msg, backend_msg
+
+
+
 msg_backend = backend_msg()
 
 

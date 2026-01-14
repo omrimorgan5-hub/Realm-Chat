@@ -15,14 +15,8 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 
 
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
-
-
-import src.PYTHON.Utils.utils_classes
-from src.PYTHON.Utils.utils_classes import *
-import src.PYTHON.SERVER.server_auth
-from src.PYTHON.SERVER.server_auth import *
+# Package imports (models and helpers)
+from chat_project.models.models import db, User_auth, backend_auth
 
 auth_backend = backend_auth()
 
@@ -183,7 +177,7 @@ def login(): # has passed tests
     user = auth_backend.get_username(username=username)
 
     if user and auth_backend.get_password(password=hashed_password):
-        if not auth_backend.get_is_verified:
+        if not auth_backend.user.get_is_verified:
              return jsonify({"message": "Account not verified. Please verify email."}), 403 
         
         return jsonify({"message": "Login successful!"}), 200

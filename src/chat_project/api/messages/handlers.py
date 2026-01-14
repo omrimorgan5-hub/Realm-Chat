@@ -15,9 +15,8 @@ from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
-import utils_classes
-from utils_classes import *
+# Package imports (models and helpers)
+from chat_project.models.models import db, User_msg, backend_msg
 msg_backend = backend_msg()
 
 

@@ -3,15 +3,13 @@ import sys
 from flask import Flask
 from flask_cors import CORS
 
-# 1. Fix pathing
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
-
-# 2. Import 'db' specifically
-from src.PYTHON.Utils.utils_classes import db
+# Package imports
+from chat_project.models.models import db
+from chat_project.api.auth import handlers as auth_funcs
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-db_auth_path = os.path.join(BASE_DIR, "src", "DATA", "DB", "accounts.db")
-db_msg_path = os.path.join(BASE_DIR, "src", "DATA", "DB", "messages.db")
+db_auth_path = os.path.join(BASE_DIR, "src", "chat_project", "data", "db", "accounts.db")
+db_msg_path = os.path.join(BASE_DIR, "src", "chat_project", "data", "db", "messages.db")
 
 def server():
     # Adding 'global db' ensures the function looks outside for the variable
@@ -32,15 +30,16 @@ def server():
 
     db.init_app(app)
 
-    # 4. NOW import the functions (Delayed import to prevent RuntimeError)
-    import src.PYTHON.Utils.functions_msg as msg_funcs
+    # Functions are imported from package handlers
+    from chat_project.api.auth.handlers import signup, login, verify_otp
 
     with app.app_context():
         db.create_all()
 
     # URL Rules
-    app.add_url_rule('/signup', view_func=msg_funcs.send_message_realm, methods=['POST'])
-
+    app.add_url_rule('/signup', view_func=signup, methods=['POST'])
+    app.add_url_rule('/login', view_func=login, methods=['POST'])
+    app.add_url_rule('/verify-otp', view_func=verify_otp, methods=['POST'])
 
     print("Server running at http://0.0.0.0:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)

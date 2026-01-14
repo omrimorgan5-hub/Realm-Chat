@@ -44,10 +44,10 @@ python src\chat_project\api\messages\server.py
 
 Repository layout
 
-- `src/PYTHON/SERVER` — server components for auth and messaging
-- `src/PYTHON/WEB` — static frontend (login, signup, otp)
-- `src/PYTHON/Utils` — helper modules and tests
-- `src/DATA/JSON` — JSON data & tokens
+- `src/chat_project/api` — server components for auth and messaging
+- `src/chat_project/web_static` — static frontend (login, signup, otp)
+- `src/chat_project/models` — models & helpers; tests are under `tests/unit`
+- `src/chat_project/data/json` — JSON data & tokens (secrets are gitignored)
 
 Where to get help
 

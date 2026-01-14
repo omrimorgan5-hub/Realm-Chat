@@ -39,10 +39,10 @@ pip install -r requirements.txt
 
 Run smoke test
 
-- Run the included test script to verify utilities:
+- Run the unit tests (set PYTHONPATH to `src`):
 
 ```powershell
-python src/PYTHON/TEST/test.py
+$env:PYTHONPATH='src'; python -m pytest
 ```
 
 Notes

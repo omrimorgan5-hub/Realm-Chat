@@ -1,15 +1,35 @@
-**/TEST
-**/venv
-**/__pycache__
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+# Virtual environment
+.venv/
+venv/
+ENV/
 .env
-token.json
+# Pytest
+.pytest_cache/
+# MyPy
+.mypy_cache/
+# IDEs
+.vscode/
+.idea/
+# OS
+.DS_Store
+Thumbs.db
+# Secrets and runtime files
 credentials.json
-**/Node.js
-**/Django
-**/DATA
-**/ASSETS
-**/__init__.py
-.vscode
+token.json
+# Project data (store locally, ignored)
+src/chat_project/data/json/
+src/chat_project/data/db/
+# Ignore old legacy directories
+src/PYTHON/
+src/DATA/
+# Misc
 **/internal_info.txt
 **/internal_info.docx
 **/~$ternal_info.docx
+

@@ -25,8 +25,9 @@ auth_backend = backend_auth()
 
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
-Credentials_json = 'C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/credentials.json'
-Token_json = "C:/Users/Omri.Morgan02/Downloads/Chat-Project/src/DATA/JSON/token.json"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+Credentials_json = os.path.join(BASE_DIR, "data", "json", "credentials.json")
+Token_json = os.path.join(BASE_DIR, "data", "json", "token.json")
 # --- DATABASE MODEL ---
 
 

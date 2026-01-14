@@ -16,7 +16,15 @@ from google.auth.transport.requests import Request
 
 
 # Package imports (models and helpers)
-from chat_project.models.models import db, User_auth, backend_auth
+# Import robustly so this module works when run as a package or as a script
+try:
+    from chat_project.models.models import db, User_auth, backend_auth
+except ModuleNotFoundError:
+    # Running without package context: add project 'src' to sys.path and retry
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+    from chat_project.models.models import db, User_auth, backend_auth
 
 auth_backend = backend_auth()
 
@@ -26,8 +34,8 @@ auth_backend = backend_auth()
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-Credentials_json = os.path.join(BASE_DIR, "data", "json", "credentials.json")
-Token_json = os.path.join(BASE_DIR, "data", "json", "token.json")
+Credentials_json = os.getenv("Credentials_json")
+Token_json = os.getenv("Token_json")
 # --- DATABASE MODEL ---
 
 

@@ -1,7 +1,6 @@
 import random
 import os
 import uuid
-from classes import backend_msg
 import threading
 import re
 from flask import Flask, request, jsonify, make_response # Flask items are needed for request/jsonify

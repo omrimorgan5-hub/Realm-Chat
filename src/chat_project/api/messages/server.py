@@ -2,54 +2,36 @@ import os
 import sys
 from flask import Flask
 from flask_cors import CORS
-
-# Package imports
-try:
-    from chat_project.models.models import db
-    from chat_project.api.messages import handlers as msg_funcs
-except ModuleNotFoundError:
-    # Running without package context: add project 'src' to sys.path and retry
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
-    from chat_project.models.models import db
-    from chat_project.api.messages import handlers as msg_funcs
+from config import Config  # Your source of truth
 
 
+# Package imports with path fix
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-db_auth_path = os.getenv("DB_AUTH_PATH")
-db_msg_path = os.getenv("DB_MESSAGE_PATH")
+from chat_project.models.models import db
+# Import views/handlers
+from chat_project.api.messages.handlers import send_message_realm
 
 def server():
-    # Adding 'global db' ensures the function looks outside for the variable
-    global db 
-    
     app = Flask(__name__)
     CORS(app) 
     
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_auth_path}'
-    app.config['SQLALCHEMY_BINDS'] = {
-        'auth': f'sqlite:///{db_auth_path}',
-        'msg':  f'sqlite:///{db_msg_path}'
-    }
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    # 1. Load everything (DB paths, Secrets, etc.) from the Config class
+    app.config.from_object(Config)
 
-    # 3. Initialize the app
-
-
+    print(f"DEBUG: Using DB URI: {app.config.get('SQLALCHEMY_DATABASE_URI')}")
+    print(f"DEBUG: Current Working Directory: {os.getcwd()}")
+    # 2. Initialize DB
     db.init_app(app)
 
-    # Functions are imported from package handlers
-    from chat_project.api.messages.handlers import send_message_realm
-
+    # 3. Create tables using the paths defined in Config
     with app.app_context():
         db.create_all()
 
-    # URL Rules
+    # 4. URL Rules
     app.add_url_rule('/message', view_func=send_message_realm, methods=['POST'])
-
 
     print("Server running at http://0.0.0.0:5000")
     app.run(debug=True, host='0.0.0.0', port=5000)

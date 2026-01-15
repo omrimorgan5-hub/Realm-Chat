@@ -23,7 +23,7 @@ except ModuleNotFoundError:
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
     if project_root not in sys.path:
         sys.path.insert(0, project_root)
-    from chat_project.models.models import db, User_msg, backend_msg
+    from chat_project.models.models import db, User_msg, backend_msg, backend_auth
 
 
 
@@ -56,9 +56,9 @@ def send_message_realm():
     
     if len(msg_data) <= 0 or len(msg_data) > 500:
         return jsonify({"message": "Message is to long or small must be 1-500 chars."}), 400
-     
+    
     msg_id = gen_id()
-    new_msg = User(
+    new_msg = User_msg(
         sender=sender,
         recipitent=recipitent,
         msg_data=msg_data,

@@ -31,3 +31,7 @@ src/chat_project/data/db/
 **/~$ternal_info.docx
 **/night_owl_stats.py
 
+# dev only
+
+**/dev_exclusive
+

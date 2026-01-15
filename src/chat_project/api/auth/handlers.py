@@ -1,6 +1,7 @@
 import random
 import os
 import sys
+from dotenv import load_dotenv
 import threading
 import re
 from flask import Flask, request, jsonify # Flask items are needed for request/jsonify
